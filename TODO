@@ -1,0 +1,3 @@
+TODO file until we have an issue tracker
+* read_raw gets tid 0 between valid tid and -1
+* rename all files and functions away from ts_calibreate_.... to "lc_"

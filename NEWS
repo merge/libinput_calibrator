@@ -1,0 +1,3 @@
+libinput_calibrator 0.1 - unreleased
+-----------------------------------------
+* inital build loosely based on tslib's ts_calibrate program
