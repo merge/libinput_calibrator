@@ -432,73 +432,28 @@ int ts_read_raw(struct tsdev *ts, struct ts_calib_sample *samp, int nr)
 
 int perform_calibration(calibration *cal)
 {
-	int j;
-	float n, x, y, x2, y2, xy, z, zx, zy;
-	float det, a, b, c, e, f, i;
-	float scaling = 65536.0;
+	struct matrix3 coeff_tmp, tmi, tm, ts, coeff;
+	const float xl = cal->xfb[0];
+	const float xr = cal->xfb[1];
+	const float yu = cal->yfb[0];
+	const float yl = cal->yfb[3];
 
-	/* Get sums for matrix */
-	n = x = y = x2 = y2 = xy = 0;
-	for (j = 0; j < 5; j++) {
-		n += 1.0;
-		x += (float)cal->x[j];
-		y += (float)cal->y[j];
-		x2 += (float)(cal->x[j]*cal->x[j]);
-		y2 += (float)(cal->y[j]*cal->y[j]);
-		xy += (float)(cal->x[j]*cal->y[j]);
-	}
+	/* skip LR */
+	tm.c00 = cal->x[UL];	tm.c10 = cal->x[UR];	tm.c20 = cal->x[LL];
+	tm.c01 = cal->y[UL];	tm.c11 = cal->y[UR];	tm.c21 = cal->y[LL];
+	tm.c02 = 1;		tm.c12 = 1;		tm.c22 = 1;
 
-	/* Get determinant of matrix -- check if determinant is too small */
-	det = n*(x2*y2 - xy*xy) + x*(xy*y - x*y2) + y*(x*xy - y*x2);
-	if (det < 0.1 && det > -0.1) {
-		printf("ts_calibrate: determinant is too small -- %f\n", det);
-		return 0;
-	}
+	ts.c00 = xl;		ts.c10 = xr;		ts.c20 = xl;
+	ts.c01 = yu;		ts.c11 = yu;		ts.c21 = yl;
+	ts.c02 = 1;		ts.c12 = 1;		ts.c22 = 1;
 
-	/* Get elements of inverse matrix */
-	a = (x2*y2 - xy*xy)/det;
-	b = (xy*y - x*y2)/det;
-	c = (x*xy - y*x2)/det;
-	e = (n*y2 - y*y)/det;
-	f = (x*y - n*xy)/det;
-	i = (n*x2 - x*x)/det;
+	matrix3_set(&tmi, &tm);
+	matrix3_invert(&tmi);
 
-	/* Get sums for x calibration */
-	z = zx = zy = 0;
-	for (j = 0; j < 5; j++) {
-		z += (float)cal->xfb[j];
-		zx += (float)(cal->xfb[j]*cal->x[j]);
-		zy += (float)(cal->xfb[j]*cal->y[j]);
-	}
+	matrix3_set(&coeff, &ts);
+	printf("verify c00 changes before multiply: %f\n", coeff.c00);
+	matrix3_multiply(&coeff, &tmi);
+	printf("verify c00 changes after multiply: %f\n", coeff.c00);
 
-	/* Now multiply out to get the calibration for framebuffer x coord */
-	cal->a[0] = (int)((a*z + b*zx + c*zy)*(scaling));
-	cal->a[1] = (int)((b*z + e*zx + f*zy)*(scaling));
-	cal->a[2] = (int)((c*z + f*zx + i*zy)*(scaling));
-
-	printf("%f %f %f\n", (a*z + b*zx + c*zy),
-			     (b*z + e*zx + f*zy),
-			     (c*z + f*zx + i*zy));
-
-	/* Get sums for y calibration */
-	z = zx = zy = 0;
-	for (j = 0; j < 5; j++) {
-		z += (float)cal->yfb[j];
-		zx += (float)(cal->yfb[j]*cal->x[j]);
-		zy += (float)(cal->yfb[j]*cal->y[j]);
-	}
-
-	/* Now multiply out to get the calibration for framebuffer y coord */
-	cal->a[3] = (int)((a*z + b*zx + c*zy)*(scaling));
-	cal->a[4] = (int)((b*z + e*zx + f*zy)*(scaling));
-	cal->a[5] = (int)((c*z + f*zx + i*zy)*(scaling));
-
-	printf("%f %f %f\n", (a*z + b*zx + c*zy),
-			     (b*z + e*zx + f*zy),
-			     (c*z + f*zx + i*zy));
-
-	/* If we got here, we're OK, so assign scaling to a[6] and return */
-	cal->a[6] = (int)scaling;
-
-	return 1;
+	/* skip UL*/
 }

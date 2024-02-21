@@ -65,6 +65,15 @@ struct tsdev {
 	struct ts_calib_sample samp_last;
 };
 
+/* TODO fix everything to use this as index into cal (get_sample) */
+enum {
+	UL = 0,
+	UR = 1,
+	LR = 2,
+	LL = 3,
+	NUM_POINTS
+};
+
 /* TODO 4x only */
 typedef struct {
 	int x[5], xfb[5];

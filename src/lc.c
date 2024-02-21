@@ -185,7 +185,7 @@ static void get_sample(struct tsdev *ts, calibration *cal,
 	}
 
 	if (last_x != -1) {
-#define NR_STEPS 10
+#define NR_STEPS 100
 		int dx = ((x - last_x) << 16) / NR_STEPS;
 		int dy = ((y - last_y) << 16) / NR_STEPS;
 		int i;
@@ -325,9 +325,6 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	/* TODO do away with the global vars */
-	ts->res_x = xres;
-	ts->res_y = yres;
 
 	for (i = 0; i < NR_COLORS; i++)
 		setcolor(i, palette[i]);
@@ -337,6 +334,20 @@ int main(int argc, char **argv)
 	put_string_center(xres / 2, yres / 4 + 20,
 			  "Touch crosshair to calibrate", 2);
 
+	/* Clear the buffer */
+	clearbuf(ts);
+
+	/* ignore rotation for calibration. only save it.*/
+	int rotation_temp = rotation;
+	rotation = 0;
+	/* orig is without rotation */
+	xres = xres_orig;
+	yres = yres_orig;
+
+	/* TODO do away with the global vars */
+	ts->res_x = xres;
+	ts->res_y = yres;
+
 	printf("framebuffer: xres = %d, yres = %d\n", ts->res_x, ts->res_y);
 	printf("input:       xres = %d, yres = %d\n", ts->input_res_x, ts->input_res_y);
 
@@ -345,22 +356,15 @@ int main(int argc, char **argv)
 		printf("Your touchscreen might not need any calibration!\n");
 	}
 
-	/* Clear the buffer */
-	clearbuf(ts);
-
-	/* ignore rotation for calibration. only save it.*/
-	int rotation_temp = rotation;
-	int xres_temp = xres;
-	int yres_temp = yres;
-	rotation = 0;
-	xres = xres_orig;
-	yres = yres_orig;
-
 	short redo = 0;
+	/* concept of 8 x 8 blocks on the screen */
+	uint32_t num_blocks = 8;
+	uint32_t delta_x = ts->res_x / num_blocks;
+	uint32_t delta_y = ts->res_y / num_blocks;
 
 redocalibration:
 	tick = getticks();
-	get_sample(ts, &cal, 0, CROSS_BOUND_DIST,        CROSS_BOUND_DIST,        "Top left", redo);
+	get_sample(ts, &cal, 0, delta_x, delta_y, "Top left", redo);
 	redo = 0;
 	if (getticks() - tick < min_interval) {
 		redo = 1;
@@ -373,7 +377,7 @@ redocalibration:
 	clearbuf(ts);
 
 	tick = getticks();
-	get_sample(ts, &cal, 1, xres - CROSS_BOUND_DIST, CROSS_BOUND_DIST,        "Top right", redo);
+	get_sample(ts, &cal, 1, ts->res_x - delta_x - 1, delta_y, "Top right", redo);
 	if (getticks() - tick < min_interval) {
 		redo = 1;
 //	#ifdef DEBUG
@@ -384,8 +388,9 @@ redocalibration:
 	}
 	clearbuf(ts);
 
+/*XXX this is LL / bot left in x */
 	tick = getticks();
-	get_sample(ts, &cal, 2, xres - CROSS_BOUND_DIST, yres - CROSS_BOUND_DIST, "Bot right", redo);
+	get_sample(ts, &cal, 2, ts->res_x - delta_x - 1, ts->res_y - delta_y - 1, "Bot right", redo);
 	if (getticks() - tick < min_interval) {
 		redo = 1;
 //	#ifdef DEBUG
@@ -396,8 +401,9 @@ redocalibration:
 	}
 	clearbuf(ts);
 
+/*XXX this is LR / bot right in x */
 	tick = getticks();
-	get_sample(ts, &cal, 3, CROSS_BOUND_DIST,        yres - CROSS_BOUND_DIST, "Bot left", redo);
+	get_sample(ts, &cal, 3, delta_x, ts->res_y - delta_y - 1, "Bot left", redo);
 	if (getticks() - tick < min_interval) {
 		redo = 1;
 //	#ifdef DEBUG
@@ -408,6 +414,8 @@ redocalibration:
 	}
 	clearbuf(ts);
 
+/* XXX unused*/
+#if 0
 	tick = getticks();
 	get_sample(ts, &cal, 4, xres_orig / 2,  yres_orig / 2,  "Center", redo);
 	if (getticks() - tick < min_interval) {
@@ -418,10 +426,9 @@ redocalibration:
 //	#endif
 		goto redocalibration;
 	}
+#endif
 
 	rotation = rotation_temp;
-	xres = xres_temp;
-	yres = yres_temp;
 
 	if (perform_calibration (&cal)) {
 		printf("Calibration constants: ");
@@ -434,7 +441,7 @@ redocalibration:
 		i = -1;
 	}
 
-	fillrect(0, 0, xres - 1, yres - 1, 0);
+	fillrect(0, 0, ts->res_x - 1, ts->res_y - 1, 0);
 	close_framebuffer();
 	close(ts->fd);
 	return i;
