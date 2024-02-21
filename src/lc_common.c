@@ -13,6 +13,10 @@
 
 #include "lc.h"
 
+#define HYPATIA_IMPLEMENTATION
+#define HYP_NO_C_MATH
+#include "hypatia.h"
+
 /* for old kernel headers */
 #ifndef INPUT_PROP_MAX
 # define INPUT_PROP_MAX			0x1f

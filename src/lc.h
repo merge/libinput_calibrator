@@ -27,9 +27,6 @@ struct ts_button {
 #define BUTTON_ACTIVE 0x00000001
 };
 
-void button_draw(struct ts_button *button);
-int button_handle(struct ts_button *button, int x, int y, unsigned int pressure);
-
 struct ts_calib_sample {
 	/* ABS_MT_* event codes. linux' include/uapi/linux/input-event-codes.h
 	 * has the definitions.
