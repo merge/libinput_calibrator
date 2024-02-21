@@ -141,8 +141,10 @@ static HYP_INLINE HYP_FLOAT HYP_SQUARE(HYP_FLOAT number)
 }
 
 /** @brief A macro that finds the square root of a value */
+#ifndef HYP_NO_C_MATH
 #ifndef HYP_SQRT
 #	define HYP_SQRT(number) ((HYP_FLOAT)sqrt(number))
+#endif
 #endif
 
 /** @brief A macro that returns the absolute value */
@@ -152,10 +154,12 @@ static HYP_INLINE HYP_FLOAT HYP_ABS(HYP_FLOAT value)
 }
 
 /** @brief A macro that wraps a value around and around in a range */
+#ifndef HYP_NO_C_MATH
 static HYP_INLINE HYP_FLOAT HYP_WRAP(HYP_FLOAT value, HYP_FLOAT start, HYP_FLOAT limit)
 {
 	return (HYP_FLOAT)fmod(start + (value - start), (limit - start));
 }
+#endif
 
 /** @brief A macro that constrains the value between two limits \a a and \a b */
 static HYP_INLINE HYP_FLOAT HYP_CLAMP(HYP_FLOAT value, HYP_FLOAT start, HYP_FLOAT limit)
@@ -266,6 +270,7 @@ HYPAPI short scalar_equals_epsilonf(const HYP_FLOAT f1, const HYP_FLOAT f2, cons
  * @{
  */
 
+#ifndef HYP_NO_C_MATH
 #define HYP_SIN(x) ((HYP_FLOAT)sin(x))
 #define HYP_COS(x) ((HYP_FLOAT)cos(x))
 #define HYP_TAN(x) ((HYP_FLOAT)tan(x))
@@ -273,6 +278,7 @@ HYPAPI short scalar_equals_epsilonf(const HYP_FLOAT f1, const HYP_FLOAT f2, cons
 #define HYP_ACOS(x) ((HYP_FLOAT)acos(x))
 #define HYP_ATAN2(y, x) ((HYP_FLOAT)atan2(y, x))
 #define HYP_COT(a) (1.0f / HYP_TAN(a))
+#endif
 
 /* @} */
 
@@ -335,8 +341,10 @@ HYPAPI struct vector2 *vector2_multiplym3(struct vector2 *self, const struct mat
 HYPAPI struct vector2 *vector2_divide(struct vector2 *self, const struct vector2 *vT);
 HYPAPI struct vector2 *vector2_dividef(struct vector2 *self, HYP_FLOAT fT);
 
+#ifndef HYP_NO_C_MATH
 HYPAPI struct vector2 *vector2_normalize(struct vector2 *self);
 HYPAPI HYP_FLOAT vector2_magnitude(const struct vector2 *self);
+#endif
 HYPAPI HYP_FLOAT vector2_distance(const struct vector2 *v1, const struct vector2 *v2);
 
 HYPAPI HYP_FLOAT vector2_dot_product(const struct vector2 *self, const struct vector2 *vT);
@@ -346,7 +354,9 @@ HYPAPI HYP_FLOAT vector2_angle_between(const struct vector2 *self, const struct 
 HYPAPI struct vector2 *vector2_find_normal_axis_between(struct vector2 *vR, const struct vector2 *vT1, const struct vector2 *vT2);
 
 /* the length is the same as "magnitude" */
+#ifndef HYP_NO_C_MATH
 #define vector2_length(v) vector2_magnitude(v)
+#endif
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -386,17 +396,23 @@ HYPAPI struct vector3 *vector3_divide(struct vector3 *self, const struct vector3
 HYPAPI struct vector3 *vector3_dividef(struct vector3 *self, HYP_FLOAT fT);
 
 HYPAPI struct vector3 *vector3_normalize(struct vector3 *self);
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector3_magnitude(const struct vector3 *self);
 HYPAPI HYP_FLOAT vector3_distance(const struct vector3 *v1, const struct vector3 *v2);
+#endif
 
 HYPAPI HYP_FLOAT vector3_dot_product(const struct vector3 *self, const struct vector3 *vT);
 HYPAPI struct vector3 *vector3_cross_product(struct vector3 *vR, const struct vector3 *vT1, const struct vector3 *vT2);
 
 HYPAPI HYP_FLOAT vector3_angle_between(const struct vector3 *self, const struct vector3 *vT);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct vector3 *vector3_find_normal_axis_between(struct vector3 *vR, const struct vector3 *vT1, const struct vector3 *vT2);
+#endif
 
 HYPAPI struct vector3 *vector3_rotate_by_quaternion(struct vector3 *self, const struct quaternion *qT);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct vector3 *vector3_reflect_by_quaternion(struct vector3 *self, const struct quaternion *qT);
+#endif
 
 /*the length is the same as "magnitude" */
 #define vector3_length(v) vector3_magnitude(v)
@@ -435,8 +451,10 @@ HYPAPI struct vector4 *vector4_divide(struct vector4 *self, const struct vector4
 HYPAPI struct vector4 *vector4_dividef(struct vector4 *self, HYP_FLOAT fT);
 
 HYPAPI struct vector4 *vector4_normalize(struct vector4 *self);
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector4_magnitude(const struct vector4 *self);
 HYPAPI HYP_FLOAT vector4_distance(const struct vector4 *v1, const struct vector4 *v2);
+#endif
 
 HYPAPI HYP_FLOAT vector4_dot_product(const struct vector4 *self, const struct vector4 *vT);
 HYPAPI struct vector4 *vector4_cross_product(struct vector4 *vR, const struct vector4 *vT1, const struct vector4 *vT2);
@@ -496,9 +514,11 @@ HYPAPI struct matrix2 *matrix2_invert(struct matrix2 *self);
 HYPAPI struct matrix2 *matrix2_inverse(const struct matrix2 *self, struct matrix2 *mR);
 
 HYPAPI struct matrix2 *matrix2_make_transformation_scalingv2(struct matrix2 *self, const struct vector2 *scale);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix2 *matrix2_make_transformation_rotationf_z(struct matrix2 *self, HYP_FLOAT angle);
 
 HYPAPI struct matrix2 *matrix2_rotate(struct matrix2 *self, HYP_FLOAT angle);
+#endif
 HYPAPI struct matrix2 *matrix2_scalev2(struct matrix2 *self, const struct vector2 *scale);
 
 HYPAPI struct matrix2 *_matrix2_transpose_rowcolumn(struct matrix2 *self);
@@ -588,10 +608,14 @@ HYPAPI struct matrix3 *matrix3_inverse(const struct matrix3 *self, struct matrix
 
 HYPAPI struct matrix3 *matrix3_make_transformation_translationv2(struct matrix3 *self, const struct vector2 *translation);
 HYPAPI struct matrix3 *matrix3_make_transformation_scalingv2(struct matrix3 *self, const struct vector2 *scale);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix3 *matrix3_make_transformation_rotationf_z(struct matrix3 *self, HYP_FLOAT angle);
+#endif
 
 HYPAPI struct matrix3 *matrix3_translatev2(struct matrix3 *self, const struct vector2 *translation);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix3 *matrix3_rotate(struct matrix3 *self, HYP_FLOAT angle);
+#endif
 HYPAPI struct matrix3 *matrix3_scalev2(struct matrix3 *self, const struct vector2 *scale);
 
 HYPAPI struct matrix3 *_matrix3_transpose_rowcolumn(struct matrix3 *self);
@@ -688,9 +712,11 @@ HYPAPI struct matrix4 *matrix4_inverse(const struct matrix4 *self, struct matrix
 HYPAPI struct matrix4 *matrix4_make_transformation_translationv3(struct matrix4 *self, const struct vector3 *translation);
 HYPAPI struct matrix4 *matrix4_make_transformation_scalingv3(struct matrix4 *self, const struct vector3 *scale);
 HYPAPI struct matrix4 *matrix4_make_transformation_rotationq(struct matrix4 *self, const struct quaternion *qT);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_make_transformation_rotationf_x(struct matrix4 *self, HYP_FLOAT angle);
 HYPAPI struct matrix4 *matrix4_make_transformation_rotationf_y(struct matrix4 *self, HYP_FLOAT angle);
 HYPAPI struct matrix4 *matrix4_make_transformation_rotationf_z(struct matrix4 *self, HYP_FLOAT angle);
+#endif
 
 HYPAPI struct matrix4 *matrix4_translatev3(struct matrix4 *self, const struct vector3 *translation);
 HYPAPI struct matrix4 *matrix4_rotatev3(struct matrix4 *self, const struct vector3 *axis, HYP_FLOAT angle);
@@ -767,6 +793,7 @@ HYPAPI struct quaternion *quaternion_inverse(struct quaternion *self);
 HYPAPI short quaternion_is_unit(struct quaternion *self);
 HYPAPI short quaternion_is_pure(struct quaternion *self);
 HYPAPI HYP_FLOAT quaternion_norm(const struct quaternion *self);
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT quaternion_magnitude(const struct quaternion *self);
 HYPAPI struct quaternion *quaternion_normalize(struct quaternion *self);
 HYPAPI HYP_FLOAT quaternion_dot_product(const struct quaternion *self, const struct quaternion *qT);
@@ -784,6 +811,7 @@ HYPAPI struct quaternion *quaternion_set_from_euler_anglesf3(struct quaternion *
 HYPAPI void quaternion_get_euler_anglesf3(const struct quaternion *self, HYP_FLOAT *ax, HYP_FLOAT *ay, HYP_FLOAT *az);
 
 HYPAPI struct quaternion *quaternion_get_rotation_tov3(const struct vector3 *from, const struct vector3 *to, struct quaternion *qR);
+#endif
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -802,22 +830,30 @@ HYPAPI struct quaternion *quaternion_get_rotation_tov3(const struct vector3 *fro
 #include <stdint.h>
 
 HYPAPI struct quaternion *quaternion_rotate_by_quaternion_EXP(struct quaternion *self, const struct quaternion *qT);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct quaternion *quaternion_rotate_by_axis_angle_EXP(struct quaternion *self, const struct vector3 *axis, HYP_FLOAT angle);
+#endif
 HYPAPI struct quaternion *quaternion_rotate_by_euler_angles_EXP(struct quaternion *self, HYP_FLOAT ax, HYP_FLOAT ay, HYP_FLOAT az);
 HYPAPI HYP_FLOAT quaternion_difference_EXP(const struct quaternion *q1, const struct quaternion *q2);
 HYPAPI HYP_FLOAT quaternion_angle_between_EXP(const struct quaternion *self, const struct quaternion *qT);
 HYPAPI void quaternion_axis_between_EXP(const struct quaternion *self, const struct quaternion *qT, struct quaternion *qR);
 HYPAPI struct matrix4 *matrix4_projection_perspective_fovy_rh_EXP(struct matrix4 *self, HYP_FLOAT fovy, HYP_FLOAT aspect, HYP_FLOAT zNear, HYP_FLOAT zFar);
 HYPAPI struct matrix4 *matrix4_projection_ortho3d_rh_EXP(struct matrix4 *self, HYP_FLOAT xmin, HYP_FLOAT xmax, HYP_FLOAT ymin, HYP_FLOAT ymax, HYP_FLOAT zNear, HYP_FLOAT zFar);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_view_lookat_rh_EXP(struct matrix4 *self, const struct vector3 *eye, const struct vector3 *target, const struct vector3 *up);
+#endif
 HYPAPI struct vector3 *matrix4_multiplyv3_EXP(const struct matrix4 *m, const struct vector3 *vT, struct vector3 *vR);
 HYPAPI struct quaternion quaternion_cross_product_EXP(const struct quaternion *self, const struct quaternion *vT);
 HYPAPI struct matrix4 *matrix4_set_from_quaternion_EXP(struct matrix4 *self, const struct quaternion *qT);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_set_from_axisv3_angle_EXP(struct matrix4 *self, const struct vector3 *axis, HYP_FLOAT angle);
+#endif
 HYPAPI struct matrix4 *matrix4_set_from_axisf3_angle_EXP(struct matrix4 *self, HYP_FLOAT x, HYP_FLOAT y, HYP_FLOAT z, const HYP_FLOAT angle);
 HYPAPI struct matrix4 *matrix4_set_from_euler_anglesf3_EXP(struct matrix4 *self, const HYP_FLOAT x, const HYP_FLOAT y, const HYP_FLOAT z);
 HYPAPI struct vector3 *matrix4_get_translation_EXP(const struct matrix4 *self, struct vector3 *vT);
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_make_transformation_rotationv3_EXP(struct matrix4 *self, const struct vector3 *vR);
+#endif
 HYPAPI struct matrix4 *matrix4_transformation_compose_EXP(struct matrix4 *self, const struct vector3 *scale, const struct quaternion *rotation, const struct vector3 *translation);
 HYPAPI uint8_t matrix4_transformation_decompose_EXP(struct matrix4 *self, struct vector3 *scale, struct quaternion *rotation, struct vector3 *translation);
 
@@ -978,6 +1014,7 @@ HYPAPI struct vector2 *vector2_dividef(struct vector2 *self, HYP_FLOAT fT)
 }
 
 
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector2_magnitude(const struct vector2 *self)
 {
 	return HYP_SQRT((self->x * self->x) + (self->y * self->y));
@@ -992,6 +1029,7 @@ HYPAPI struct vector2 *vector2_normalize(struct vector2 *self)
 	self->y = self->y / mag;
 	return self;
 }
+#endif
 
 
 HYPAPI HYP_FLOAT vector2_dot_product(const struct vector2 *self, const struct vector2 *vT)
@@ -1008,6 +1046,7 @@ HYPAPI struct vector2 *vector2_cross_product(struct vector2 *vR, const struct ve
 }
 
 
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector2_angle_between(const struct vector2 *self, const struct vector2 *vT)
 {
 	return vector2_dot_product(self, vT) / (vector2_magnitude(self) * vector2_magnitude(vT));
@@ -1031,7 +1070,7 @@ HYPAPI HYP_FLOAT vector2_distance(const struct vector2 *v1, const struct vector2
 {
 	return HYP_SQRT((v2->x - v1->x) * (v2->x - v1->x) + (v2->y - v1->y) * (v2->y - v1->y));
 }
-
+#endif
 
 /**
  * @brief Multiply a vector by a matrix, returns a vector
@@ -1287,6 +1326,7 @@ HYPAPI struct vector3 *vector3_divide(struct vector3 *self, const struct vector3
  * @ingroup vector3
  * @brief calculates the magnitude of the vector
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector3_magnitude(const struct vector3 *self)
 {
 	return HYP_SQRT((self->x * self->x) + (self->y * self->y) + (self->z * self->z));
@@ -1316,7 +1356,7 @@ HYPAPI struct vector3 *vector3_normalize(struct vector3 *self)
 
 	return self;
 }
-
+#endif
 
 /**
  * @ingroup vector3
@@ -1346,6 +1386,7 @@ HYPAPI struct vector3 *vector3_cross_product(struct vector3 *vR, const struct ve
  * normalized vector only
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector3_angle_between(const struct vector3 *vT1, const struct vector3 *vT2)
 {
 	HYP_FLOAT c; /* cosine */
@@ -1354,6 +1395,7 @@ HYPAPI HYP_FLOAT vector3_angle_between(const struct vector3 *vT1, const struct v
 
 	return 2.0f * HYP_ACOS(c);
 }
+#endif
 
 
 /**
@@ -1361,12 +1403,14 @@ HYPAPI HYP_FLOAT vector3_angle_between(const struct vector3 *vT1, const struct v
  * @brief finds the vector describing the normal between two vectors
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct vector3 *vector3_find_normal_axis_between(struct vector3 *vR, const struct vector3 *vT1, const struct vector3 *vT2)
 {
 	vector3_cross_product(vR, vT1, vT2);
 	vector3_normalize(vR);
 	return vR;
 }
+#endif
 
 
 /**
@@ -1376,11 +1420,12 @@ HYPAPI struct vector3 *vector3_find_normal_axis_between(struct vector3 *vR, cons
  *
  * https://en.wikipedia.org/wiki/Distance
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector3_distance(const struct vector3 *v1, const struct vector3 *v2)
 {
 	return HYP_SQRT((v2->x - v1->x) * (v2->x - v1->x) + (v2->y - v1->y) * (v2->y - v1->y) + (v2->z - v1->z) * (v2->z - v1->z));
 }
-
+#endif
 
 /**
  * @brief Multiply a vector by a matrix, mutates the vector and returns it
@@ -1452,6 +1497,7 @@ HYPAPI struct vector3 *vector3_rotate_by_quaternion(struct vector3 *self, const 
  * @param self the starting point that is rotated by qT
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct vector3 *vector3_reflect_by_quaternion(struct vector3 *self, const struct quaternion *qT)
 {
 	struct quaternion q;
@@ -1469,6 +1515,7 @@ HYPAPI struct vector3 *vector3_reflect_by_quaternion(struct vector3 *self, const
 
 	return self;
 }
+#endif
 
 
 /**
@@ -1688,6 +1735,7 @@ HYPAPI struct vector4 *vector4_divide(struct vector4 *self, const struct vector4
  * @ingroup vector4
  * @brief calculates the magnitude of the vector
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector4_magnitude(const struct vector4 *self)
 {
 	return HYP_SQRT((self->x * self->x) + (self->y * self->y) + (self->z * self->z) + (self->w * self->w));
@@ -1718,7 +1766,7 @@ HYPAPI struct vector4 *vector4_normalize(struct vector4 *self)
 
 	return self;
 }
-
+#endif
 
 /**
  * @ingroup vector4
@@ -1751,6 +1799,7 @@ HYPAPI struct vector4 *vector4_cross_product(struct vector4 *vR, const struct ve
  *
  * https://en.wikipedia.org/wiki/Distance
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT vector4_distance(const struct vector4 *v1, const struct vector4 *v2)
 {
 	return HYP_SQRT((v2->x - v1->x) * (v2->x - v1->x)
@@ -1758,7 +1807,7 @@ HYPAPI HYP_FLOAT vector4_distance(const struct vector4 *v1, const struct vector4
 		    + (v2->z - v1->z) * (v2->z - v1->z)
 		    + (v2->w - v1->w) * (v2->w - v1->w));
 }
-
+#endif
 
 #ifndef HYP_NO_STDIO
 HYPAPI void _vector4_print(const struct vector4 *self)
@@ -2057,6 +2106,7 @@ HYPAPI struct matrix2 *matrix2_make_transformation_scalingv2(struct matrix2 *sel
  *
  * multiply this matrix by another matrix to rotate the other matrix
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix2 *matrix2_make_transformation_rotationf_z(struct matrix2 *m, HYP_FLOAT angle)
 {
 	HYP_FLOAT c = HYP_COS(angle);
@@ -2071,7 +2121,6 @@ HYPAPI struct matrix2 *matrix2_make_transformation_rotationf_z(struct matrix2 *m
 
 	return m;
 }
-
 
 /**
  * @ingroup matrix2
@@ -2090,6 +2139,7 @@ HYPAPI struct matrix2 *matrix2_rotate(struct matrix2 *self, HYP_FLOAT angle)
 	return matrix2_multiply(self,
 		matrix2_make_transformation_rotationf_z(&rotationMatrix, angle));
 }
+#endif
 
 
 /**
@@ -2494,6 +2544,7 @@ HYPAPI struct matrix3 *matrix3_make_transformation_scalingv2(struct matrix3 *sel
  *
  * multiply this matrix by another matrix to rotate the other matrix
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix3 *matrix3_make_transformation_rotationf_z(struct matrix3 *m, HYP_FLOAT angle)
 {
 	HYP_FLOAT c = HYP_COS(angle);
@@ -2508,6 +2559,7 @@ HYPAPI struct matrix3 *matrix3_make_transformation_rotationf_z(struct matrix3 *m
 
 	return m;
 }
+#endif
 
 
 /**
@@ -2538,6 +2590,7 @@ HYPAPI struct matrix3 *matrix3_translatev2(struct matrix3 *self, const struct ve
  * @param angle the angle of rotation in radians
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix3 *matrix3_rotate(struct matrix3 *self, HYP_FLOAT angle)
 {
 	struct matrix3 rotationMatrix;
@@ -2545,6 +2598,7 @@ HYPAPI struct matrix3 *matrix3_rotate(struct matrix3 *self, HYP_FLOAT angle)
 	return matrix3_multiply(self,
 		matrix3_make_transformation_rotationf_z(&rotationMatrix, angle));
 }
+#endif
 
 
 /**
@@ -3073,6 +3127,7 @@ HYPAPI struct matrix4 *matrix4_make_transformation_scalingv3(struct matrix4 *sel
  *
  * multiply this matrix by another matrix to rotate the other matrix
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_make_transformation_rotationf_x(struct matrix4 *m, HYP_FLOAT angle)
 {
 	HYP_FLOAT c = HYP_COS(angle);
@@ -3135,6 +3190,7 @@ HYPAPI struct matrix4 *matrix4_make_transformation_rotationf_z(struct matrix4 *m
 
 	return m;
 }
+#endif
 
 
 /**
@@ -3165,6 +3221,7 @@ HYPAPI struct matrix4 *matrix4_translatev3(struct matrix4 *self, const struct ve
  * @param angle the angle of rotation in radians
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_rotatev3(struct matrix4 *self, const struct vector3 *axis, HYP_FLOAT angle)
 {
 	struct matrix4 rotationMatrix;
@@ -3174,6 +3231,7 @@ HYPAPI struct matrix4 *matrix4_rotatev3(struct matrix4 *self, const struct vecto
 				matrix4_make_transformation_rotationq(&rotationMatrix,
 								      quaternion_set_from_axis_anglev3(&q, axis, angle)));
 }
+#endif
 
 
 /**
@@ -3361,6 +3419,7 @@ HYPAPI struct quaternion *quaternion_set(struct quaternion *self, const struct q
  * q = cos(a/2) + i ( x * sin(a/2)) + j (y * sin(a/2)) + k ( z * sin(a/2))
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct quaternion *quaternion_set_from_axis_anglef3(struct quaternion *self, HYP_FLOAT x, HYP_FLOAT y, HYP_FLOAT z, HYP_FLOAT angle)
 {
 	HYP_FLOAT s = HYP_SIN(angle / 2.0f);
@@ -3391,6 +3450,7 @@ HYPAPI struct quaternion *quaternion_set_from_axis_anglev3(struct quaternion *se
 {
 	return quaternion_set_from_axis_anglef3(self, axis->x, axis->y, axis->z, angle);
 }
+#endif
 
 
 /**
@@ -3405,6 +3465,7 @@ HYPAPI struct quaternion *quaternion_set_from_axis_anglev3(struct quaternion *se
  * @param az the z axis
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct quaternion *quaternion_set_from_euler_anglesf3(struct quaternion *self, HYP_FLOAT ax, HYP_FLOAT ay, HYP_FLOAT az)
 {
 	self->w = HYP_COS(az / 2.0f) * HYP_COS(ay / 2.0f) * HYP_COS(ax / 2.0f) + HYP_SIN(az / 2.0f) * HYP_SIN(ay / 2.0f) * HYP_SIN(ax / 2.0f);
@@ -3443,6 +3504,7 @@ HYPAPI void quaternion_get_euler_anglesf3(const struct quaternion *self, HYP_FLO
 	*ay = HYP_ASIN(-2.0f * ((qx * qz) - (qw * qy)));
 	*az = HYP_ATAN2(((qx * qy) + (qw * qz)), 0.5f - ((qy * qy) + (qz * qz)));
 }
+#endif
 
 
 /**
@@ -3480,10 +3542,12 @@ HYPAPI HYP_FLOAT quaternion_norm(const struct quaternion *self)
  *
  * \f$\sqrt{\|q\|}\f$
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT quaternion_magnitude(const struct quaternion *self)
 {
 	return HYP_SQRT(quaternion_norm(self));
 }
+#endif
 
 
 /**
@@ -3568,6 +3632,7 @@ HYPAPI struct quaternion *quaternion_inverse(struct quaternion *self)
  * values on the manifold.
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct quaternion *quaternion_normalize(struct quaternion *self)
 {
 	HYP_FLOAT mag;
@@ -3588,6 +3653,7 @@ HYPAPI struct quaternion *quaternion_normalize(struct quaternion *self)
 
 	return self;
 }
+#endif
 
 
 /**
@@ -3625,6 +3691,7 @@ HYPAPI short quaternion_is_pure(struct quaternion *self)
  * @param qR The resulting new orientation.
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct quaternion *quaternion_nlerp(const struct quaternion *start, const struct quaternion *end, HYP_FLOAT percent, struct quaternion *qR)
 {
 	quaternion_lerp(start, end, percent, qR);
@@ -3764,6 +3831,7 @@ HYPAPI struct quaternion *quaternion_slerp(const struct quaternion *start, const
 
 	return qR;
 }
+#endif
 
 
 /**
@@ -3884,6 +3952,7 @@ HYPAPI struct quaternion *quaternion_multiplyv3(struct quaternion *self, const s
  * @param angle the angle in radians; will be filled with the angle value
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI void quaternion_get_axis_anglev3(const struct quaternion *self, struct vector3 *vR, HYP_FLOAT *angle)
 {
 	/* scale is not same as magnitude */
@@ -3903,7 +3972,6 @@ HYPAPI void quaternion_get_axis_anglev3(const struct quaternion *self, struct ve
 	*angle = 2.0f * HYP_ACOS(self->w);
 }
 
-
 /**
  * @ingroup quaternion
  * @brief initializes the quaternion with random values, then normalizes it
@@ -3919,6 +3987,7 @@ HYPAPI struct quaternion *_quaternion_set_random(struct quaternion *self)
 
 	return self;
 }
+#endif
 
 
 #ifndef HYP_NO_STDIO
@@ -3986,6 +4055,7 @@ HYPAPI struct quaternion *quaternion_get_rotation_tov3(const struct vector3 *fro
  * @param qT the other quaternion
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct quaternion *quaternion_rotate_by_quaternion_EXP(struct quaternion *self, const struct quaternion *qT)
 {
 	/* self = self * qT */
@@ -4016,6 +4086,7 @@ HYPAPI struct quaternion *quaternion_rotate_by_axis_angle_EXP(struct quaternion 
 
 	return self;
 }
+#endif
 
 
 
@@ -4050,6 +4121,7 @@ HYPAPI HYP_FLOAT quaternion_difference_EXP(const struct quaternion *q1, const st
  * @param az roll
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct quaternion *quaternion_rotate_by_euler_angles_EXP(struct quaternion *self, HYP_FLOAT ax, HYP_FLOAT ay, HYP_FLOAT az)
 {
 	struct quaternion qT;
@@ -4062,6 +4134,7 @@ HYPAPI struct quaternion *quaternion_rotate_by_euler_angles_EXP(struct quaternio
 
 	return self;
 }
+#endif
 
 
 /**
@@ -4096,6 +4169,7 @@ HYPAPI struct quaternion quaternion_cross_product_EXP(const struct quaternion *s
  *  * \f$angle= 2 * acos((self \cdot qT) / (||self|| * ||qT||))\f$
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI HYP_FLOAT quaternion_angle_between_EXP(const struct quaternion *self, const struct quaternion *qT)
 {
 	HYP_FLOAT c; /* cosine */
@@ -4104,6 +4178,7 @@ HYPAPI HYP_FLOAT quaternion_angle_between_EXP(const struct quaternion *self, con
 
 	return 2.0f * HYP_ACOS(c);
 }
+#endif
 
 
 /**
@@ -4112,6 +4187,7 @@ HYPAPI HYP_FLOAT quaternion_angle_between_EXP(const struct quaternion *self, con
  * and then computes the cross-product between them.
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI void quaternion_axis_between_EXP(const struct quaternion *self, const struct quaternion *qT, struct quaternion *qR)
 {
 	struct quaternion axis;
@@ -4120,6 +4196,7 @@ HYPAPI void quaternion_axis_between_EXP(const struct quaternion *self, const str
 	quaternion_set(qR, &axis);
 	quaternion_normalize(qR);
 }
+#endif
 
 
 /**
@@ -4127,6 +4204,7 @@ HYPAPI void quaternion_axis_between_EXP(const struct quaternion *self, const str
  * @brief creates an perspective projection matrix using the RH system with a
  * FOV about the Y-axis.  It's opinionated about what that means.
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_projection_perspective_fovy_rh_EXP(struct matrix4 *self, HYP_FLOAT fovy, HYP_FLOAT aspect, HYP_FLOAT zNear, HYP_FLOAT zFar)
 {
 	HYP_FLOAT h;
@@ -4150,6 +4228,7 @@ HYPAPI struct matrix4 *matrix4_projection_perspective_fovy_rh_EXP(struct matrix4
 
 	return self;
 }
+#endif
 
 
 /**
@@ -4209,6 +4288,7 @@ HYPAPI struct vector3 *matrix4_multiplyv3_EXP(const struct matrix4 *m, const str
  * @param angle the angle in radians
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_set_from_axisf3_angle_EXP(struct matrix4 *self, HYP_FLOAT x, HYP_FLOAT y, HYP_FLOAT z, const HYP_FLOAT angle)
 {
 	HYP_FLOAT c = HYP_COS(angle);
@@ -4236,6 +4316,7 @@ HYPAPI struct matrix4 *matrix4_set_from_axisf3_angle_EXP(struct matrix4 *self, H
 
 	return self;
 }
+#endif
 
 
 /**
@@ -4248,12 +4329,15 @@ HYPAPI struct matrix4 *matrix4_set_from_axisf3_angle_EXP(struct matrix4 *self, H
  * @param angle the angle in radians
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_set_from_axisv3_angle_EXP(struct matrix4 *self, const struct vector3 *axis, HYP_FLOAT angle)
 {
 	return matrix4_set_from_axisf3_angle_EXP(self, axis->x, axis->y, axis->z, angle);
 }
+#endif
 
 
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_set_from_euler_anglesf3_EXP(struct matrix4 *self, const HYP_FLOAT x, const HYP_FLOAT y, const HYP_FLOAT z)
 {
 	HYP_FLOAT A = HYP_COS(x);
@@ -4288,6 +4372,7 @@ HYPAPI struct matrix4 *matrix4_set_from_euler_anglesf3_EXP(struct matrix4 *self,
 
 	return self;
 }
+#endif
 
 
 HYPAPI struct vector3 *matrix4_get_translation_EXP(const struct matrix4 *self, struct vector3 *vT)
@@ -4304,6 +4389,7 @@ HYPAPI struct vector3 *matrix4_get_translation_EXP(const struct matrix4 *self, s
  * @ingroup experimental
  * @brief creates a look at matrix using the RH system.
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_view_lookat_rh_EXP(struct matrix4 *self, const struct vector3 *eye, const struct vector3 *target, const struct vector3 *up)
 {
 	struct vector3 yaxis;
@@ -4342,6 +4428,7 @@ HYPAPI struct matrix4 *matrix4_view_lookat_rh_EXP(struct matrix4 *self, const st
 
 	return self;
 }
+#endif
 
 
 /**
@@ -4353,6 +4440,7 @@ HYPAPI struct matrix4 *matrix4_view_lookat_rh_EXP(struct matrix4 *self, const st
  * @param vR the euler angles
  *
  */
+#ifndef HYP_NO_C_MATH
 HYPAPI struct matrix4 *matrix4_make_transformation_rotationv3_EXP(struct matrix4 *self, const struct vector3 *vR)
 {
 	struct matrix4 scratchMatrix;
@@ -4362,6 +4450,7 @@ HYPAPI struct matrix4 *matrix4_make_transformation_rotationv3_EXP(struct matrix4
 	return matrix4_multiply(self,
 		matrix4_set_from_euler_anglesf3_EXP(&scratchMatrix, vR->x, vR->y, vR->z));
 }
+#endif
 
 
 HYPAPI struct matrix4 *matrix4_transformation_compose_EXP(struct matrix4 *self, const struct vector3 *scale, const struct quaternion *rotation, const struct vector3 *translation)
@@ -4384,6 +4473,7 @@ HYPAPI struct matrix4 *matrix4_transformation_compose_EXP(struct matrix4 *self, 
 	return self;
 }
 
+#ifndef HYP_NO_C_MATH
 HYPAPI uint8_t matrix4_transformation_decompose_EXP(struct matrix4 *self, struct vector3 *scale, struct quaternion *rotation, struct vector3 *translation)
 {
 	HYP_FLOAT signx, signy, signz;
@@ -4414,6 +4504,7 @@ HYPAPI uint8_t matrix4_transformation_decompose_EXP(struct matrix4 *self, struct
 
 	return 1;
 }
+#endif
 
 #undef _HYP_CAT
 #undef _HYP_PRIMITIVE_CAT
